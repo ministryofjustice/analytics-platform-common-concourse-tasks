@@ -1,0 +1,37 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: concourse/docker-image-resource
+
+inputs:
+- name: release
+- name: webapp-docker-repo
+- name: webapp-source
+
+outputs:
+- name: webapp-docker-image
+
+params:
+  AWS_ACCESS_KEY_ID: ((ecr-access-key-id))
+  AWS_SECRET_ACCESS_KEY: ((ecr-secret-access-key))
+
+run:
+  path: sh
+  args:
+    - -ec
+    - |
+      jq -n "{
+        source: {
+          repository: \"$(cat webapp-docker-repo/uri)\",
+          aws_access_key_id: \"${AWS_ACCESS_KEY_ID}\",
+          aws_secret_access_key: \"${AWS_SECRET_ACCESS_KEY}\"
+        },
+        params: {
+          build: \"$(pwd)/webapp-source\",
+          tag: \"$(pwd)/release/tag\"
+        }
+      }" | /opt/resource/out webapp-docker-image
+

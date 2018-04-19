@@ -1,0 +1,20 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: gempesaw/curl-jq
+
+outputs:
+- name: ec2-metadata
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    curl -o credentials.json http://169.254.169.254/latest/meta-data/iam/security-credentials/nodes.dev.mojanalytics.xyz &&
+    jq -r '.AccessKeyId' > ec2-metadata/access-key-id < credentials.json &&
+    jq -r '.SecretAccessKey' > ec2-metadata/secret-access-key < credentials.json &&
+    jq -r '.Token' > ec2-metadata/token < credentials.json
