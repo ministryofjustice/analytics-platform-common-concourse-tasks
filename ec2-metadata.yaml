@@ -9,12 +9,15 @@ image_resource:
 outputs:
 - name: ec2-metadata
 
+params:
+  IAM_ROLE_NAME:
+
 run:
   path: sh
   args:
-  - -exc
+  - -ec
   - |
-    curl -o credentials.json http://169.254.169.254/latest/meta-data/iam/security-credentials/nodes.dev.mojanalytics.xyz &&
+    curl -o credentials.json http://169.254.169.254/latest/meta-data/iam/security-credentials/${IAM_ROLE_NAME} &&
     jq -r '.AccessKeyId' > ec2-metadata/access-key-id < credentials.json &&
     jq -r '.SecretAccessKey' > ec2-metadata/secret-access-key < credentials.json &&
     jq -r '.Token' > ec2-metadata/token < credentials.json
