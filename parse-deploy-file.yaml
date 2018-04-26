@@ -16,7 +16,6 @@ params:
   IPS_DOM1:
   IPS_QUANTUM:
   IPS_102PF_WIFI:
-  IPS_CLIVE_HOUSE:
 
 run:
   path: sh
@@ -25,7 +24,6 @@ run:
   - |
     jq --argjson ip "{
       \"102PF Wifi\": \"$IPS_102PF_WIFI\",
-      \"Clive House Wifi\": \"$IPS_CLIVE_HOUSE_WIFI\",
       \"DOM1\": \"$IPS_DOM1\",
       \"QUANTUM\": \"$IPS_QUANTUM\"
     }" -r '{
