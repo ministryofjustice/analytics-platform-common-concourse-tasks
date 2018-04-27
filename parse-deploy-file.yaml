@@ -6,17 +6,55 @@ image_resource:
   source:
     repository: gempesaw/curl-jq
 
+# directories this task can read from
 inputs:
 - name: webapp-source
 
+# exported directories, where output files can be shared with other tasks
 outputs:
 - name: deploy-params
 
+# These params are made available as environment variables
+# The values are passed by the invoking pipeline
 params:
   IPS_DOM1:
   IPS_QUANTUM:
   IPS_102PF_WIFI:
 
+# jq script does the following:
+#
+# * sh -ec
+#   run (c)ommand and (e)xit on errors
+#
+# * < webapp-source/deploy.json
+#   reads JSON from input directory `webapp-source`. This is an object with the
+#   following keys:
+#     enable_authentication - optional - true/false
+#     allowed_ip_ranges - optional - array of names of ip ranges
+#
+# * --argjson ip "{...}"
+#   sets the variable `ip` to the JSON object mapping names to ip ranges
+#
+# * -r
+#   output raw string, not JSON texts
+#
+# * (.enable_authentication // true)
+#   gets the value of the enable_authentication key, or `true` if missing
+#
+# * (.allowed_ip_ranges // ["DOM1"])
+#   gets the array of ip range names, or a default array containing "DOM1"
+#
+# * | map($ip[.])
+#   maps the array of ip range names to their corresponding value in `ip`
+#
+# * | join(",")
+#   concatenates the ip ranges into a comma separated string
+#
+# * | gsub(...)
+#   escapes all commas and periods with "\\"
+#
+# * > deploy-params/overrides.yaml
+#   writes JSON output to exported file
 run:
   path: sh
   args:
