@@ -50,9 +50,6 @@ params:
 # * | join(",")
 #   concatenates the ip ranges into a comma separated string
 #
-# * | gsub(...)
-#   escapes all commas and periods with "\\"
-#
 # * > deploy-params/overrides.yaml
 #   writes JSON output to exported file
 run:
@@ -67,6 +64,6 @@ run:
     }" -r '{
       AuthProxy: {
         AuthenticationRequired: (.enable_authentication // true),
-        IPRanges: (.allowed_ip_ranges // ["DOM1"]) | map($ip[.]) | join(",") | gsub("(?<x>[,.])"; "\\\(.x)")
+        IPRanges: (.allowed_ip_ranges // ["DOM1"]) | map($ip[.]) | join(",")
       }
     }' < webapp-source/deploy.json > deploy-params/overrides.yaml
