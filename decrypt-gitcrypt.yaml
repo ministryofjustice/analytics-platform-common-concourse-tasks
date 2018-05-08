@@ -9,9 +9,6 @@ image_resource:
 inputs:
 - name: files
 
-outputs:
-- name: files
-
 params:
   SYMMETRIC_KEY:
 
