@@ -7,7 +7,10 @@ image_resource:
     repository: suet/git-crypt
 
 inputs:
-- name: files
+- name: encrypted
+
+outputs:
+- name: decrypted
 
 params:
   SYMMETRIC_KEY:
@@ -17,7 +20,10 @@ run:
   args:
   - -ec
   - |
-    echo $SYMMETRIC_KEY > /tmp/symmetric.key
-    pushd files
+    echo -n $SYMMETRIC_KEY | base64 -d > /tmp/symmetric.key
+    cd encrypted
+    echo "Decrypting files ..."
     git-crypt unlock /tmp/symmetric.key
-    popd
+    head -n1 chart-env-config/dev/cpanel.yml
+    cd ..
+    cp -R encrypted/* decrypted/
