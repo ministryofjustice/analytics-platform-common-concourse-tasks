@@ -57,13 +57,18 @@ run:
   args:
   - -ec
   - |
-    jq --argjson ip "{
-      \"102PF Wifi\": \"$IPS_102PF_WIFI\",
-      \"DOM1\": \"$IPS_DOM1\",
-      \"QUANTUM\": \"$IPS_QUANTUM\"
-    }" -r '{
-      AuthProxy: {
-        AuthenticationRequired: (.enable_authentication // true),
-        IPRanges: (.allowed_ip_ranges // ["DOM1"]) | map($ip[.]) | join(",")
-      }
-    }' < webapp-source/deploy.json > deploy-params/overrides.yaml
+    if [ -f webapp-source/deploy.json ]; then
+      echo "Parsing deploy.json"
+      jq --argjson ip "{
+        \"102PF Wifi\": \"$IPS_102PF_WIFI\",
+        \"DOM1\": \"$IPS_DOM1\",
+        \"QUANTUM\": \"$IPS_QUANTUM\"
+      }" -r '{
+        AuthProxy: {
+          AuthenticationRequired: (.enable_authentication // true),
+          IPRanges: (.allowed_ip_ranges // ["DOM1"]) | map($ip[.]) | join(",")
+        }
+      }' < webapp-source/deploy.json > deploy-params/overrides.yaml
+    else
+      echo "No deploy.json"
+    fi

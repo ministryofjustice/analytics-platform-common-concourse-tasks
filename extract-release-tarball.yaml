@@ -14,4 +14,4 @@ outputs:
 
 run:
   path: tar
-  args: ['zxf', 'release/source.tar.gz', '-C', 'webapp-source/', '--strip-components', '1']
+  args: ['zxvf', 'release/source.tar.gz', '-C', 'webapp-source/', '--strip-components', '1']
