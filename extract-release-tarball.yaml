@@ -10,8 +10,11 @@ inputs:
 - name: release
 
 outputs:
-- name: webapp-source
+- name: extracted
 
 run:
-  path: tar
-  args: ['zxvf', 'release/source.tar.gz', '-C', 'webapp-source/', '--strip-components', '1']
+  path: sh
+  args:
+  - -ec
+  - |
+    tar zxf release/source.tar.gz -C extracted/ --strip-components=1
