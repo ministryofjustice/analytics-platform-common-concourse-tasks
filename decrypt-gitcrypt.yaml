@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: suet/git-crypt
+
+inputs:
+- name: files
+
+outputs:
+- name: files
+
+params:
+  SYMMETRIC_KEY:
+
+run:
+  path: sh
+  args:
+  - -ec
+  - |
+    echo $SYMMETRIC_KEY > /tmp/symmetric.key
+    pushd files
+    git-crypt unlock /tmp/symmetric.key
+    popd
