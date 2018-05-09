@@ -24,6 +24,5 @@ run:
     cd encrypted
     echo "Decrypting files ..."
     git-crypt unlock /tmp/symmetric.key
-    head -n1 chart-env-config/dev/cpanel.yml
     cd ..
     cp -R encrypted/* decrypted/
