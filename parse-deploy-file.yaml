@@ -38,8 +38,8 @@ params:
 # * -r
 #   output raw string, not JSON texts
 #
-# * (.enable_authentication // true)
-#   gets the value of the enable_authentication key, or `true` if missing
+# * (.disable_authentication // false)
+#   gets the value of the disable_authentication key, or `false` if missing
 #
 # * (.allowed_ip_ranges // ["DOM1"])
 #   gets the array of ip range names, or a default array containing "DOM1"
@@ -65,7 +65,7 @@ run:
         \"QUANTUM\": \"$IPS_QUANTUM\"
       }" -r '{
         AuthProxy: {
-          AuthenticationRequired: (.enable_authentication // true),
+          AuthenticationRequired: (.disable_authentication // false) | not,
           IPRanges: (.allowed_ip_ranges // ["DOM1"]) | map($ip[.]) | join(",")
         }
       }' < webapp-source/deploy.json > deploy-params/overrides.yaml
