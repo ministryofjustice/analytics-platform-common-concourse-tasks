@@ -1,0 +1,43 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: busybox
+
+inputs:
+- name: input
+
+outputs:
+- name: normalized
+
+params:
+  STRING:
+
+run:
+  path: sh
+  args:
+  - -ec
+  - |
+    if [ -n "$STRING" ]; then
+      echo -n "$STRING" > input/param
+    fi
+    for filename in $(ls input); do
+      echo "normalizing ${filename}"
+      cat input/$filename |
+        # lowercase
+        tr '[:upper:]' '[:lower:]' |
+        # replace invalid chars with spaces
+        sed 's/[^a-z0-9]\+/ /g' |
+        # strip leading spaces
+        sed 's/^ *//' |
+        # wrap whole words at 50 chars
+        fold -s -w 50 |
+        # first line only
+        head -n1 |
+        # strip trailing spaces
+        sed 's/ *$//' |
+        # replace spaces with hyphens
+        tr ' ' '-' > normalized/$filename
+    done
