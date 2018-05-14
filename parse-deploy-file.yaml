@@ -23,42 +23,50 @@ params:
   IPS_102PF_WIFI:
 
 run:
-  path: python
+  path: sh
   args:
-  - - <<EOF
+  - -ec
   - |
-import json, os
-lookup = {
-  '102PF Wifi': '$IPS_102PF_WIFI',
-  'DOM1': '$IPS_DOM1',
-  'QUANTUM': '$IPS_QUANTUM',
-  'Any': ''
-}
-
-with open('webapp-source/deploy.json') as input:
-  print('Parsing deploy.json')
-  data = json.load(input)
-
-allowed = data.get('allowed_ip_ranges', [])
-if 'Any' in allowed:
-  ip_ranges = ['']
-else:
-  ip_ranges = [lookup[name] for name in allowed if name in lookup]
-if not ip_ranges:
-  ip_ranges = [lookup['DOM1']]
-
-with open('deploy-params/overrides.yaml', 'w') as output:
-  json.dump({
-    'AuthProxy': {
-      'AuthenticationRequired': not data.get('disable_authentication', False),
-      'IPRanges': ','.join(ip_ranges)
+    python - <<EOF
+    import json, os
+    lookup = {
+      '102PF Wifi': '$IPS_102PF_WIFI',
+      'DOM1': '$IPS_DOM1',
+      'QUANTUM': '$IPS_QUANTUM',
+      'Any': ''
     }
-  }, output)
 
-with open('deploy-params/auth-proxy/auth-required', 'w') as f:
-  f.write(str(auth_required).lower())
+    with open('webapp-source/deploy.json') as input:
+      print('Parsing deploy.json')
+      data = json.load(input)
 
-with open('deploy-params/auth-proxy/ip-ranges', 'w') as f:
-  f.write(','.join(ip_ranges))
+    allowed = data.get('allowed_ip_ranges', [])
+    if 'Any' in allowed:
+      ip_ranges = ['']
+    else:
+      ip_ranges = [lookup[name] for name in allowed if name in lookup]
+    if not ip_ranges:
+      ip_ranges = [lookup['DOM1']]
 
-EOF
+    auth_required = not data.get('disable_authentication', False)
+
+    with open('deploy-params/overrides.yaml', 'w') as output:
+      json.dump({
+        'AuthProxy': {
+          'AuthenticationRequired': auth_required,
+          'IPRanges': ','.join(ip_ranges)
+        }
+      }, output)
+    print('Wrote deploy-params/overrides.yaml')
+
+    os.mkdir('deploy-params/auth-proxy')
+
+    with open('deploy-params/auth-proxy/auth-required', 'w') as f:
+      f.write(str(auth_required).lower())
+      print('Wrote deploy-params/auth-proxy/auth-required')
+
+    with open('deploy-params/auth-proxy/ip-ranges', 'w') as f:
+      f.write(','.join(ip_ranges))
+      print('Wrote deploy-params/auth-proxy/ip-ranges')
+
+    EOF
