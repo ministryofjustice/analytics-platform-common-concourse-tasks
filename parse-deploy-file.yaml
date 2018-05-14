@@ -4,7 +4,8 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: gempesaw/curl-jq
+    repository: python
+    tag: alpine
 
 # directories this task can read from
 inputs:
@@ -21,54 +22,43 @@ params:
   IPS_QUANTUM:
   IPS_102PF_WIFI:
 
-# jq script does the following:
-#
-# * sh -ec
-#   run (c)ommand and (e)xit on errors
-#
-# * < webapp-source/deploy.json
-#   reads JSON from input directory `webapp-source`. This is an object with the
-#   following keys:
-#     enable_authentication - optional - true/false
-#     allowed_ip_ranges - optional - array of names of ip ranges
-#
-# * --argjson ip "{...}"
-#   sets the variable `ip` to the JSON object mapping names to ip ranges
-#
-# * -r
-#   output raw string, not JSON texts
-#
-# * (.disable_authentication // false)
-#   gets the value of the disable_authentication key, or `false` if missing
-#
-# * (.allowed_ip_ranges // ["DOM1"])
-#   gets the array of ip range names, or a default array containing "DOM1"
-#
-# * | map($ip[.])
-#   maps the array of ip range names to their corresponding value in `ip`
-#
-# * | join(",")
-#   concatenates the ip ranges into a comma separated string
-#
-# * > deploy-params/overrides.yaml
-#   writes JSON output to exported file
 run:
-  path: sh
+  path: python
   args:
-  - -ec
+  - - <<EOF
   - |
-    if [ -f webapp-source/deploy.json ]; then
-      echo "Parsing deploy.json"
-      jq --argjson ip "{
-        \"102PF Wifi\": \"$IPS_102PF_WIFI\",
-        \"DOM1\": \"$IPS_DOM1\",
-        \"QUANTUM\": \"$IPS_QUANTUM\"
-      }" -r '{
-        AuthProxy: {
-          AuthenticationRequired: (.disable_authentication // false) | not,
-          IPRanges: (.allowed_ip_ranges // ["DOM1"]) | map($ip[.]) | join(",")
-        }
-      }' < webapp-source/deploy.json > deploy-params/overrides.yaml
-    else
-      echo "No deploy.json"
-    fi
+import json, os
+lookup = {
+  '102PF Wifi': '$IPS_102PF_WIFI',
+  'DOM1': '$IPS_DOM1',
+  'QUANTUM': '$IPS_QUANTUM',
+  'Any': ''
+}
+
+with open('webapp-source/deploy.json') as input:
+  print('Parsing deploy.json')
+  data = json.load(input)
+
+allowed = data.get('allowed_ip_ranges', [])
+if 'Any' in allowed:
+  ip_ranges = ['']
+else:
+  ip_ranges = [lookup[name] for name in allowed if name in lookup]
+if not ip_ranges:
+  ip_ranges = [lookup['DOM1']]
+
+with open('deploy-params/overrides.yaml', 'w') as output:
+  json.dump({
+    'AuthProxy': {
+      'AuthenticationRequired': not data.get('disable_authentication', False),
+      'IPRanges': ','.join(ip_ranges)
+    }
+  }, output)
+
+with open('deploy-params/auth-proxy/auth-required', 'w') as f:
+  f.write(str(auth_required).lower())
+
+with open('deploy-params/auth-proxy/ip-ranges', 'w') as f:
+  f.write(','.join(ip_ranges))
+
+EOF
