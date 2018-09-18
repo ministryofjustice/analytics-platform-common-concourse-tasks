@@ -1,0 +1,42 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: governmentpaas/awscli
+
+inputs:
+  - name: common-tasks
+  - name: source
+
+outputs:
+- name: output
+
+params:
+  AWS_ACCESS_KEY_ID: ((role-putter-access-key-id))
+  AWS_SECRET_ACCESS_KEY: ((role-putter-secret-access-key))
+  AWS_NODES_ROLE_ARN: ((node-arn))
+  APP_NAME: ((app-name))
+
+run:
+  path: sh
+  args:
+  - -ecx
+  - |
+    sed 's@${AWS_NODES_ROLE_ARN}@'$AWS_NODES_ROLE_ARN'@g' ./common-tasks/templates/trust-policy.json.tmpl > ./trust-policy.json
+    export ROLE_NAME=$(cat source/deploy.json | jq -r '.role_name')
+    if [ -f "./source/iam_policy.json" ]; then
+      if aws iam get-role --role-name $ROLE_NAME; then
+        echo "Updating Role ($ROLE_NAME) with Inline Policy:"
+      else
+        echo "Creating Role ($ROLE_NAME) with Inline Policy:"
+        aws iam create-role --role-name $ROLE_NAME --assume-role-policy-document file://./trust-policy.json
+      fi
+      cat ./source/iam_policy.json
+      aws iam put-role-policy --role-name $ROLE_NAME --policy-document file://./source/iam_policy.json --policy-name $APP_NAME
+    else
+      echo "No inline policy found at iam_policy.json, skip creating role."
+    fi
+    echo $ROLE_NAME > output/iam_role_name
+    echo "IAM role name: $ROLE_NAME"
