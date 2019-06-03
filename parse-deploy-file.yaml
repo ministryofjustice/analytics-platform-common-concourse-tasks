@@ -64,14 +64,4 @@ run:
       }, output)
     print('Wrote deploy-params/overrides.yaml')
 
-    os.mkdir('deploy-params/auth-proxy')
-
-    with open('deploy-params/auth-proxy/auth-required', 'w') as f:
-      f.write(str(auth_required).lower())
-      print('Wrote deploy-params/auth-proxy/auth-required')
-
-    with open('deploy-params/auth-proxy/ip-ranges', 'w') as f:
-      f.write(','.join(ip_ranges))
-      print('Wrote deploy-params/auth-proxy/ip-ranges')
-
     EOF
