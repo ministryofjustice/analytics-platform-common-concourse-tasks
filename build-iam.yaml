@@ -1,0 +1,19 @@
+platform: linux
+inputs:
+  - name: source
+outputs:
+  - name: source
+image_resource:
+  type: docker-image
+  source:
+    repository: python
+    tag: alpine
+run:
+  path: sh
+  args:
+  - -ec
+  - |
+    pip install iam_builder
+    if [ -f ./source/iam_config.yaml ] && [ ! -f ./source/iam_policy.json ]; then
+      iam_builder -c ./source/iam_config.yaml -o ./source/iam_policy.json
+    fi
