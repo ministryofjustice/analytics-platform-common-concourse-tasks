@@ -2,7 +2,7 @@ platform: linux
 inputs:
   - name: source
 outputs:
-  - name: source
+  - name: source-out
 image_resource:
   type: docker-image
   source:
@@ -13,7 +13,9 @@ run:
   args:
   - -ec
   - |
-    pip install iam_builder
+    cp -R ./source/. ./source-out/
     if [ -f ./source/iam_config.yaml ] && [ ! -f ./source/iam_policy.json ]; then
-      iam_builder -c ./source/iam_config.yaml -o ./source/iam_policy.json
+      echo 'Building iam_policy.json from iam_config.yaml'
+      pip install iam_builder
+      iam_builder -c ./source/iam_config.yaml -o ./source-out/iam_policy.json
     fi
