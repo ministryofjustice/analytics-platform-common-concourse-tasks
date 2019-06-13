@@ -1,0 +1,17 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: quay.io/mojanalytics/alpine-python-git-jq
+    tag: latest
+params:
+  GITHUB_TOKEN: ((secrets.github-access-token))
+inputs:
+- name: repos
+- name: common-tasks
+outputs:
+- name: policies
+run:
+  path: bash
+  args:
+  - ./common-tasks/scripts/extract-policies-from-repos.sh
