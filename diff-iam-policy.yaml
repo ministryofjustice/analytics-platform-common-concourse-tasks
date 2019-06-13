@@ -9,6 +9,7 @@ params:
   AWS_SECRET_ACCESS_KEY: ((secrets.role-putter-secret-access-key))
 inputs:
 - name: policies
+- name: common-tasks
 run:
   path: sh
   args:

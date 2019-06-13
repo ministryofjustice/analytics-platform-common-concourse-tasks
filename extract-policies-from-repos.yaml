@@ -8,6 +8,7 @@ params:
   GITHUB_TOKEN: ((secrets.github-access-token))
 inputs:
 - name: repos
+- name: common-tasks
 outputs:
 - name: policies
 run:
