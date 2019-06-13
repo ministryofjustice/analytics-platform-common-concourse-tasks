@@ -1,3 +1,5 @@
+set -e
+
 cat policies/list.json | jq -r '.[] | [.app_name, .role, (.policy|tostring)] | @tsv' |
   while IFS=$'\t' read -r app_name role policy; do
     echo ${app_name}

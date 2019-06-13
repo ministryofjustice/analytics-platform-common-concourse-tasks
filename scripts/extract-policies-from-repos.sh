@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 pip install iam_builder
 echo '[]' | jq -S . > policies/list.json
 cat repos/list.txt
