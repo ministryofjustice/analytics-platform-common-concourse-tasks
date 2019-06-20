@@ -1,21 +1,26 @@
 platform: linux
 inputs:
   - name: source
+  - name: common-tasks
 outputs:
   - name: source-out
 image_resource:
   type: docker-image
   source:
-    repository: python
-    tag: alpine
+    repository: quay.io/mojanalytics/alpine-python-git-jq
 run:
   path: sh
   args:
   - -ec
   - |
     cp -R ./source/. ./source-out/
-    if [ -f ./source/iam_config.yaml ] && [ ! -f ./source/iam_policy.json ]; then
+    if [[ -f ./source/iam_config.yaml ]] && [[ ! -f ./source/iam_policy.json ]]; then
       echo 'Building iam_policy.json from iam_config.yaml'
       pip install iam_builder
-      iam_builder -c ./source/iam_config.yaml -o ./source-out/iam_policy.json
+      iam_builder -c ./source/iam_config.yaml -o ./source/iam_policy.json
     fi
+    export ROLE_NAME=$(cat source/deploy.json | jq -r '.role_name')
+    deny=$(sed 's@\$ROLE_NAME@'${ROLE_NAME}'@g' ./common-tasks/templates/parameter-deny-all.json | jq .)
+    cat ./source/iam_policy.json
+    jq --argjson a "$deny" '.Statement += [$a]' ./source/iam_policy.json > ./source-out/iam_policy.json
+    cat ./source-out/iam_policy.json
