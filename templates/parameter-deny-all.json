@@ -5,10 +5,10 @@
     "ssm:GetParameters",
     "ssm:GetParameterHistory"
   ],
-  "Resource": "arn:aws:ssm:::parameter/*",
+  "Resource": "arn:aws:ssm:*::parameter/*",
   "Condition": {
     "StringNotLike": {
-      "ssm:prefix": "alpha/airflow/$ROLE_NAME/secrets"
+      "ssm:resourceTag/role": "airflow_viper_to_external"
     }
   }
 }
