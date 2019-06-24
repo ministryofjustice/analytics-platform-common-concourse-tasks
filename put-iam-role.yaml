@@ -33,7 +33,6 @@ run:
         echo "Creating Role ($ROLE_NAME) with Inline Policy:"
         aws iam create-role --role-name $ROLE_NAME --assume-role-policy-document file://./trust-policy.json
       fi
-      ls -al ./source/iam_policy.json
       cat ./source/iam_policy.json
       aws iam put-role-policy --role-name $ROLE_NAME --policy-document file://./source/iam_policy.json --policy-name $APP_NAME
     else
