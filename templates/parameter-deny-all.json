@@ -8,7 +8,7 @@
   "Resource": "arn:aws:ssm:*::parameter/*",
   "Condition": {
     "StringNotLike": {
-      "ssm:resourceTag/role": "airflow_viper_to_external"
+      "ssm:resourceTag/role": "$ROLE_NAME"
     }
   }
 }
