@@ -15,7 +15,8 @@ do
     fi
     if [[ -f ${line}/deploy.json ]] && [[ -f ${line}/iam_policy.json ]]; then
       role=$(cat ${line}/deploy.json | jq -r '.role_name')
-      policy=$(cat ${line}/iam_policy.json | jq -r .)
+      deny=$(sed 's@\$ROLE_NAME@'${role}'@g' ./common-tasks/templates/parameter-deny-all.json | jq .)
+      policy=$(cat ${line}/iam_policy.json | jq --argjson a "$deny" '.Statement += [$a]')
       rm -rf ${line}
       policies=$(cat policies/list.json | jq --argjson policy "$policy" --arg role "$role"  --arg app_name "$line" '. += [{role: $role, policy: $policy, app_name: $app_name}]')
       echo ${policies} | jq -S . > policies/list.json
