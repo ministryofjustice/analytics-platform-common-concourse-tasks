@@ -19,6 +19,7 @@ outputs:
 # The values are passed by the invoking pipeline
 params:
   IPS_DOM1:
+  IPS_DIGITAL:
   IPS_QUANTUM:
   IPS_102PF_WIFI:
 
@@ -31,6 +32,7 @@ run:
     import json, os
     lookup = {
       '102PF Wifi': '$IPS_102PF_WIFI',
+      'Digital Wifi and VPN': '$IPS_DIGITAL',
       'DOM1': '$IPS_DOM1',
       'QUANTUM': '$IPS_QUANTUM',
       'Any': ''
