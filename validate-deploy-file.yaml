@@ -1,0 +1,19 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: quay.io/mojanalytics/deployjson
+    tag: latest
+
+# directories this task can read from
+inputs:
+- name: webapp-source
+
+run:
+  path: sh
+  args:
+  - -exc
+  - |
+    yarn start -f ${PWD}/webapp-source/deploy.json
