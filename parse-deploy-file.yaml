@@ -22,6 +22,7 @@ params:
   IPS_DIGITAL:
   IPS_QUANTUM:
   IPS_102PF_WIFI:
+  IPS_TURING:
 
 run:
   path: sh
@@ -35,6 +36,7 @@ run:
       'Digital Wifi and VPN': '$IPS_DIGITAL',
       'DOM1': '$IPS_DOM1',
       'QUANTUM': '$IPS_QUANTUM',
+      'Alan Turing Institute': '$IPS_TURING',
       'Any': ''
     }
 
