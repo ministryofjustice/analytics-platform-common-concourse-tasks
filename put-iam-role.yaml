@@ -40,3 +40,7 @@ run:
     fi
     echo $ROLE_NAME > output/iam_role_name
     echo "IAM role name: $ROLE_NAME"
+    if [[ "$DELETE_AFTER_TEST" == "true" ]]; then
+      echo 'Deleting role policy as it is a test role'
+      aws iam delete-role-policy --role-name $ROLE_NAME --policy-name $APP_NAME
+    fi

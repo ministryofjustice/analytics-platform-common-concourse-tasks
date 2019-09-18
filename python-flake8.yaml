@@ -1,0 +1,15 @@
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: python
+    tag: alpine
+inputs:
+- name: source
+run:
+  path: sh
+  args:
+  - -ec
+  - |
+    pip install flake8
+    flake8 ./source/

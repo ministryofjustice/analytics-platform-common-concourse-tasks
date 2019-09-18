@@ -1,0 +1,16 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: governmentpaas/awscli
+params:
+  AWS_ACCESS_KEY_ID: ((secrets.role-putter-access-key-id))
+  AWS_SECRET_ACCESS_KEY: ((secrets.role-putter-secret-access-key))
+inputs:
+- name: policies
+- name: common-tasks
+run:
+  path: sh
+  args:
+  - ./common-tasks/scripts/diff-iam-policy.sh
