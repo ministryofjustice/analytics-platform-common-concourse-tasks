@@ -50,13 +50,20 @@ run:
 
     auth_required = not data.get('disable_authentication', False)
 
-    with open('deploy-params/overrides.yaml', 'w') as output:
-      json.dump({
+    override = {
         'AuthProxy': {
           'AuthenticationRequired': auth_required,
           'IPRanges': ','.join(ip_ranges)
         }
-      }, output)
+    }
+
+    if 'health_check' in data:
+      override['WebApp'] = {
+        'HealthCheck': '\healthz'
+        }
+
+    with open('deploy-params/overrides.yaml', 'w') as output:
+      json.dump(override, output)
     print('Wrote deploy-params/overrides.yaml')
 
     os.mkdir('deploy-params/auth-proxy')
