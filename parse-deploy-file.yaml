@@ -55,6 +55,8 @@ run:
     auth_required = not data.get('disable_authentication', False)
     webapp_port = data.get('port', 80)
 
+    health_check = data.get('health_check', '/?healthz')
+
     # The following are input values of the webapp helm chart
     with open('deploy-params/overrides.yaml', 'w') as output:
       json.dump({
@@ -64,7 +66,9 @@ run:
         },
         'WebApp': {
           'Port': webapp_port,
+          'HealthCheck': health_check,
         },
+
       }, output)
     print('Wrote deploy-params/overrides.yaml')
 
