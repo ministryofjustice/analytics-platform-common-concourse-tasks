@@ -6,10 +6,11 @@ image_resource:
     tag: alpine
 inputs:
 - name: source
+- name: common-tasks
 run:
   path: sh
   args:
   - -ec
   - |
     pip install flake8
-    flake8 ./source/
+    flake8 --config=./common-tasks/conf/.flake8 ./source/
