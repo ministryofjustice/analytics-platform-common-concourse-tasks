@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: governmentpaas/awscli
+    repository: quay.io/mojanalytics/python3-boto3
 
 # directories this task can read from
 inputs:
