@@ -29,4 +29,4 @@ run:
   args:
   - -ec
   - |
-    python ./scripts/parse_deploy_file.py
+    python ./common-tasks/scripts/parse_deploy_file.py
