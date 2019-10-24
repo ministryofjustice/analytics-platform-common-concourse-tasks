@@ -10,7 +10,6 @@ params:
   AWS_SECRET_ACCESS_KEY: ((secrets.parameter-secret-access-key))
   APP_NAME: ((app-name))
 inputs:
-- name: webapp-source
 - name: common-tasks
 outputs:
 - name: parameter-store
