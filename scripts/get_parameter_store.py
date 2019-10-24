@@ -6,7 +6,7 @@ with open('webapp-source/deploy.json') as input:
     print('Parsing deploy.json')
     data = json.load(input)
 
-ssm = boto3.client('ssm')
+ssm = boto3.client('ssm', region_name='eu-west-1')
 role_name = data.get('role_name', None)
 if role_name:
     parameter_path = f'/alpha/webapp/{role_name}/secrets/'
