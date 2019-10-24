@@ -14,7 +14,7 @@ outputs:
 - name: parameter-store
 run:
   path: sh
-    args:
+  args:
     - -ec
     - |
       python ./common-tasks/scripts/get_parameter_store.py
