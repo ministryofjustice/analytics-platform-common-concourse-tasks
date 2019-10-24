@@ -10,8 +10,9 @@ ssm = boto3.client('ssm')
 role_name = data['role_name']
 parameter_path = f'/alpha/webapp/{role_name}/secrets/'
 parameters = ssm.get_parameters_by_path(
-  Path=parameter_path,
-  WithDecryption=True,
+    Path=parameter_path,
+    WithDecryption=True,
+    MaxResults=999
 ).get('Parameters', [])
 env_vars = {p['Name']: p['Value'] for p in parameters}
 overrides = {'secretEnv': env_vars} if env_vars else {}
