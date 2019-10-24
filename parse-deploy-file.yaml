@@ -4,7 +4,8 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: quay.io/mojanalytics/python3-boto3
+    repository: python
+    tag: python
 
 # directories this task can read from
 inputs:
