@@ -37,17 +37,21 @@ parameters = ssm.get_parameters_by_path(
 ).get('Parameters', [])
 env_vars = {p['Name']: p['Value'] for p in parameters}
 
+overrides = {
+    'AuthProxy': {
+        'AuthenticationRequired': auth_required,
+        'IPRanges': ','.join(ip_ranges),
+    },
+    'WebApp': {
+        'Port': webapp_port,
+        'HealthCheck': health_check,
+    }
+}
+
+if env_vars:
+    overrides['secretEnv'] = env_vars
+
 # The following are input values of the webapp helm chart
 with open('deploy-params/overrides.yaml', 'w') as output:
-    json.dump({
-        'AuthProxy': {
-            'AuthenticationRequired': auth_required,
-            'IPRanges': ','.join(ip_ranges),
-        },
-        'WebApp': {
-            'Port': webapp_port,
-            'HealthCheck': health_check,
-        },
-        'secretEnv': env_vars
-    }, output)
+    json.dump(overrides, output)
 print('Wrote deploy-params/overrides.yaml')
