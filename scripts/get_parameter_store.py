@@ -1,4 +1,4 @@
-import json
+import json, os
 
 import boto3
 
@@ -6,18 +6,16 @@ with open('webapp-source/deploy.json') as input:
     print('Parsing deploy.json')
     data = json.load(input)
 
-ssm = boto3.client('ssm', region_name='eu-west-1')
-role_name = data.get('role_name', None)
-if role_name:
-    parameter_path = f'/alpha/webapp/{role_name}/secrets/'
-    parameters = ssm.get_parameters_by_path(
-        Path=parameter_path,
-        WithDecryption=True,
-        MaxResults=999
-    ).get('Parameters', [])
-    env_vars = {p['Name']: p['Value'] for p in parameters}
-else:
-    env_vars = {}
+ssm = boto3.client('ssm')
+app_name = os.environ.get('APP_NAME')
+role_name = f'alpha_app_{app_name}'
+parameter_path = f'/alpha/webapp/{role_name}/secrets/'
+parameters = ssm.get_parameters_by_path(
+    Path=parameter_path,
+    WithDecryption=True,
+    MaxResults=999
+).get('Parameters', [])
+env_vars = {p['Name']: p['Value'] for p in parameters}
 
 overrides = {'secretEnv': env_vars} if env_vars else {}
 

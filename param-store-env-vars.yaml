@@ -5,8 +5,10 @@ image_resource:
   source:
     repository: quay.io/mojanalytics/python3-boto3
 params:
-  AWS_ACCESS_KEY_ID: ((secrets.role-putter-access-key-id))
-  AWS_SECRET_ACCESS_KEY: ((secrets.role-putter-secret-access-key))
+  AWS_DEFAULT_REGION: ((secrets.aws-region))
+  AWS_ACCESS_KEY_ID: ((secrets.parameter-access-key-id))
+  AWS_SECRET_ACCESS_KEY: ((secrets.parameter-secret-access-key))
+  APP_NAME: ((app-name))
 inputs:
 - name: webapp-source
 - name: common-tasks
