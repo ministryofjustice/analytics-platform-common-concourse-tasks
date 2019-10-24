@@ -13,6 +13,8 @@ inputs:
 outputs:
 - name: parameter-store
 run:
-  path: python
-  args:
-  - ./common-tasks/scripts/get_parameter_store.py
+  path: sh
+    args:
+    - -ec
+    - |
+      python ./common-tasks/scripts/get_parameter_store.py
