@@ -1,11 +1,12 @@
+import os
 import json
 
 lookup = {
-    '102PF Wifi': '$IPS_102PF_WIFI',
-    'Digital Wifi and VPN': '$IPS_DIGITAL',
-    'DOM1': '$IPS_DOM1',
-    'QUANTUM': '$IPS_QUANTUM',
-    'Alan Turing Institute': '$IPS_TURING',
+    '102PF Wifi': os.environ.get('IPS_102PF_WIFI'),
+    'Digital Wifi and VPN': os.environ.get('IPS_DIGITAL'),
+    'DOM1': os.environ.get('IPS_DOM1'),
+    'QUANTUM': os.environ.get('IPS_QUANTUM'),
+    'Alan Turing Institute': os.environ.get('IPS_TURING'),
     'Any': ''
 }
 
