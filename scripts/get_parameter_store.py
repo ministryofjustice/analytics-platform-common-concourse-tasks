@@ -12,7 +12,7 @@ parameters = ssm.get_parameters_by_path(
     WithDecryption=True,
     MaxResults=10
 ).get('Parameters', [])
-env_vars = {p['Name']: p['Value'] for p in parameters}
+env_vars = {os.path.basename(p['Name']): p['Value'] for p in parameters}
 
 overrides = {'secretEnv': env_vars} if env_vars else {}
 
