@@ -2,4 +2,5 @@
 
 # Increase max line length to be the same as python black
 max-line-length = 88
-extend-ignore = E203
+select = C,E,F,W,B,B950
+ignore = E501
