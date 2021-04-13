@@ -24,6 +24,7 @@ params:
   IPS_QUANTUM:
   IPS_102PF_WIFI:
   IPS_TURING:
+  IPS_MOJO:
 
 run:
   path: sh
