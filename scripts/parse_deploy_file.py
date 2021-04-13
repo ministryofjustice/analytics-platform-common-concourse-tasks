@@ -7,6 +7,7 @@ lookup = {
     'DOM1': os.environ.get('IPS_DOM1'),
     'QUANTUM': os.environ.get('IPS_QUANTUM'),
     'Alan Turing Institute': os.environ.get('IPS_TURING'),
+    'MoJo': os.environ.get('IPS_MOJO'),
     'Any': ''
 }
 
